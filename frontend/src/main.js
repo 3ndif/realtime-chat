@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import App from './App'
 import {routes} from './routes'
+import store from './store'
 
 Vue.config.productionTip = false
 
@@ -20,6 +21,6 @@ const router = new VueRouter({
 
 /* eslint-disable no-new */
 new Vue({
-  router
+  router, store
 }).$mount('#app')
 

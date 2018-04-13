@@ -1,6 +1,5 @@
 <template>
   <div>
-    xcvc
     <router-view/>
   </div>
 </template>
