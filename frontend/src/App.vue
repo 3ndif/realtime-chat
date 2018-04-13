@@ -11,7 +11,9 @@ export default {
 
 <template>
   <div>
-    <top-menu-nav/>
+    <top-menu-nav
+      v-show="$route.name === 'login' ? false : true">
+    </top-menu-nav>
     <router-view/>
   </div>
 </template>

@@ -1,5 +1,7 @@
-import App from './App'
+import LoginPage from './pages/LoginPage'
+import HomePage from './pages/HomePage'
 
 export const routes = [
-  {path: '/', component: App, name: 'home'}
+  {path: '/', component: HomePage, name: 'home'},
+  {path: '/login', component: LoginPage, name: 'login'}
 ]
