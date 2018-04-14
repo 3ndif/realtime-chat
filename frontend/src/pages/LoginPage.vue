@@ -1,5 +1,7 @@
 <script>
 import {mapState} from 'vuex'
+import {clientData} from './../env'
+import {apiUrl} from './../links'
 
 export default {
   computed: {
@@ -15,12 +17,19 @@ export default {
   },
   methods: {
     handleLoginSubmit () {
-      let userData = {
+      const postData = {
+        grant_type: 'password',
+        client_id: clientData.clientId,
+        client_secret: clientData.clientSecret,
         email: this.email,
-        password: this.password
+        password: this.password,
+        scope: ''
       }
 
-      console.log(userData)
+      this.$http.post('http://chat.local/oauth/token', postData)
+        .then(response => {
+          console.log(response)
+        })
     }
   }
 }
@@ -29,7 +38,9 @@ export default {
 <template>
   <div id="chat-login-page-container">
     <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png">
-    <form class="form-signin">
+    <form
+    v-on:submit.prevent="handleLoginSubmit()"
+    class="form-signin">
       <input
       v-model="email"
       type="email"
@@ -52,7 +63,6 @@ export default {
         </label>
       </div>
       <button
-        v-on:click="handleLoginSubmit"
         class="btn btn-primary btn-block">Login</button>
     </form>
   </div>
