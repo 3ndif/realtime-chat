@@ -1,19 +1,15 @@
-import Vue from 'vuex'
-
 const state = {
   user: null
 }
 
 const mutations = {
   SET_AUTH_USER (state, user) {
-    state.authUser = user
+    state.user = user
   }
 }
 
 const actions = {
-  setAuthUser: ({commit}, user) {
-    let user = window.localStorage.getItem('authUser')
-
+  setAuthUser: ({commit}, user) => {
     commit('SET_AUTH_USER', user)
   }
 }

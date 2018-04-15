@@ -18,7 +18,7 @@ function getHeaders () {
 
   let authUser = JSON.parse(window.localStorage.getItem('authUser'))
 
-  if (authUser !== null) {
+  if (authUser && authUser.access_token) {
     headers['Authorization'] = 'Bearer ' + authUser.access_token
   }
 

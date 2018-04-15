@@ -45,6 +45,7 @@ export default {
       authUser.refresh_token = passportData.refresh_token
       window.localStorage.setItem('authUser', JSON.stringify(authUser))
 
+      HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + authUser.access_token
       HTTP.get(api.user)
         .then(response => {
           console.log(response)
