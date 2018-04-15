@@ -1,7 +1,7 @@
 import Vue from 'vuex'
 
 const state = {
-  authUser: null
+  user: null
 }
 
 const mutations = {
@@ -11,10 +11,10 @@ const mutations = {
 }
 
 const actions = {
-  setAuthUser: ({commit}) {
+  setAuthUser: ({commit}, user) {
     let user = window.localStorage.getItem('authUser')
 
-    commit('SET_AUTH_USER', JSON.parse(user))
+    commit('SET_AUTH_USER', user)
   }
 }
 

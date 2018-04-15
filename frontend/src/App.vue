@@ -5,6 +5,8 @@ export default {
   name: 'App',
   components: {
     TopMenuNav
+  },
+  created () {
   }
 }
 </script>

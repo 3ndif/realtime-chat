@@ -1,7 +1,7 @@
 <script>
 import {mapState} from 'vuex'
 import {clientData} from './../env'
-import {apiUrl} from './../links'
+import {HTTP, api} from './../http-links'
 
 export default {
   computed: {
@@ -11,8 +11,8 @@ export default {
   },
   data () {
     return {
-      email: null,
-      password: null
+      email: 'first@mail.ru',
+      password: 'password'
     }
   },
   methods: {
@@ -21,14 +21,42 @@ export default {
         grant_type: 'password',
         client_id: clientData.clientId,
         client_secret: clientData.clientSecret,
-        email: this.email,
+        username: this.email,
         password: this.password,
         scope: ''
       }
 
-      this.$http.post('http://chat.local/oauth/token', postData)
+      HTTP.post(api.login, postData)
         .then(response => {
           console.log(response)
+          if (response.status !== 200) {
+            return false
+          }
+
+          this.setAuthUser(response.data)
+        }).catch(error => {
+          console.log(error.response)
+        })
+    },
+    setAuthUser (passportData) {
+      const authUser = {}
+
+      authUser.access_token = passportData.access_token
+      authUser.refresh_token = passportData.refresh_token
+      window.localStorage.setItem('authUser', JSON.stringify(authUser))
+
+      HTTP.get(api.user)
+        .then(response => {
+          console.log(response)
+          authUser.email = response.data.email
+          authUser.name = response.data.name
+
+          let jsonUser = JSON.stringify(authUser)
+          window.localStorage.setItem('authUser', jsonUser)
+
+          this.$store.dispatch('setAuthUser', authUser)
+
+          this.$router.push({name: 'home'})
         })
     }
   }

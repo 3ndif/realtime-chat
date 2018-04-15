@@ -22,7 +22,7 @@ class Cors
 
             if (in_array($origin, $allowDomains)) {
                 header('Access-Control-Allow-Origin: '.$origin);
-                header('Access-Control-Allow-Headers: Origin, Content-Type, Content-Range, Content-Disposition, Content-Description, Authorization, Accept');
+                header('Access-Control-Allow-Headers: Origin, Content-Type, X-Requested-With, Content-Disposition, Content-Description, Authorization, Accept');
             }
         }
 
