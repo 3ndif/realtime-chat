@@ -17,4 +17,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function(){
   Route::get('user', function(Request $request) {
     return $request->user();
   });
+
+  Route::get('get-user-list', 'UserController@getUserList');
 });

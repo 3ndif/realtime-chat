@@ -7,7 +7,8 @@ export const HTTP = axios.create({
 
 export const api = {
   login: 'oauth/token',
-  user: 'api/v1/user'
+  user: 'api/v1/user',
+  getUserList: 'api/v1/get-user-list'
 }
 
 function getHeaders () {
