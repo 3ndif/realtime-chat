@@ -9,6 +9,20 @@ export default {
   },
   created () {
     this.$store.dispatch('setUserList')
+  },
+  methods: {
+    handleOpenConversationWithUser (user) {
+      this.$store.dispatch('setCurrentChatUser', user)
+    },
+    selectedClass (user) {
+      if (this.chatStore.currentChatUser === null) {
+        return ''
+      }
+
+      if (this.chatStore.currentChatUser.id === user.id) {
+        return 'selected'
+      }
+    }
   }
 }
 </script>
@@ -20,7 +34,9 @@ export default {
       <div
       v-for="(user, index) in chatStore.userList"
       :key="index"
-      class="row body">
+      class="row body"
+      v-bind:class="[selectedClass(user)]"
+      v-on:click="handleOpenConversationWithUser(user)">
         <div class="col-md-3 col-3"></div>
         <div class="col-md-9 col-9">
           <div class="row">
@@ -42,6 +58,8 @@ export default {
   padding: 0;
   margin: 0;
   height: 100%;
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 0.875rem;
 
   .header {
     padding: 10px 16px 10px 15px;
@@ -68,6 +86,12 @@ export default {
       height: 72px;
       margin: 0 !important;
       cursor: pointer;
+      &:hover {
+        background-color: #f2f2f2;
+      }
+      &.selected {
+        background-color: #f2f2f2;
+      }
 
       .body-name {
         padding: 10px !important;

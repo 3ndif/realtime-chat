@@ -8,7 +8,9 @@ export const HTTP = axios.create({
 export const api = {
   login: 'oauth/token',
   user: 'api/v1/user',
-  getUserList: 'api/v1/get-user-list'
+  getUserList: 'api/v1/get-user-list',
+  getConversationWithUser: 'api/v1/get-conversation-with-user',
+  sendNewMessage: 'api/v1/send-new-message'
 }
 
 function getHeaders () {

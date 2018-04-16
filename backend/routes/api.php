@@ -19,4 +19,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function(){
   });
 
   Route::get('get-user-list', 'UserController@getUserList');
+  Route::get('get-conversation-with-user', 'ChatController@getConversationWithUser');
+  Route::post('send-new-message', 'ChatController@sendNewMessage');
 });

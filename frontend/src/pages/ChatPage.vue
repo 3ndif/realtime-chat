@@ -23,5 +23,6 @@ export default {
 <style lang="scss" scoped>
   #chat-page-container {
     height: 100%;
+    margin-top: 20px;
   }
 </style>

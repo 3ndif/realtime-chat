@@ -1,6 +1,13 @@
 <script>
 export default {
   created () {
+  },
+  methods: {
+    handleLogout () {
+      this.$store.dispatch('clearUser')
+      window.localStorage.removeItem('authUser')
+      this.$router.push({name: 'login'})
+    }
   }
 }
 </script>
@@ -15,8 +22,11 @@ export default {
 
       <div class="collapse navbar-collapse" id="navbarColor03">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              :to="{name: 'home'}">Home
+            </router-link>
           </li>
           <li class="nav-item">
             <router-link
@@ -24,11 +34,10 @@ export default {
               :to="{name: 'chat'}">Chat
             </router-link>
           </li>
+          <li class="nav-item" v-on:click="handleLogout()">
+            <a class="nav-link" href="javascript:void(0)">Logout</a>
+          </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search">
-          <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-        </form>
       </div>
     </nav>
   </div>
