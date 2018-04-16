@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <div id="chat-widget">
+  <div id="chat-widget" class="row">
     <user-list></user-list>
     <chat-content></chat-content>
   </div>
