@@ -7,6 +7,8 @@ export default {
     TopMenuNav
   },
   created () {
+    const userObj = JSON.parse(window.localStorage.getItem('authUser'))
+    this.$store.dispatch('setAuthUser', userObj)
   }
 }
 </script>

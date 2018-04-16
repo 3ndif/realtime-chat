@@ -57,6 +57,9 @@ const actions = {
           commit('ADD_NEW_MESSAGE_TO_CONVERSATION', response.data.data)
         }
       })
+  },
+  addNewMessageToConversation: ({commit}, newMessage) => {
+    commit('ADD_NEW_MESSAGE_TO_CONVERSATION', newMessage)
   }
 }
 

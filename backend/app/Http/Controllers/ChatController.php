@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Redis;
 use App\Chat;
 
 class ChatController extends Controller
@@ -42,6 +43,9 @@ class ChatController extends Controller
       $msg = Chat::create($newMessage);
 
       $result = Chat::where('id', $msg->id)->first();
+
+      $redis = Redis::connection();
+      $redis->publish('message', $result);
 
       return response(['data' => $result]);
 

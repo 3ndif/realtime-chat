@@ -6,12 +6,22 @@ import ChatContent from './ChatContent'
 export default {
   computed: {
     ...mapState({
-      chatStore: state => state.chatStore
+      chatStore: state => state.chatStore,
+      userStore: state => state.userStore
     })
   },
   components: {
     UserList,
     ChatContent
+  },
+  sockets: {
+    message (data) {
+      let newMessage = JSON.parse(data)
+      console.log(newMessage)
+      if (newMessage.receiver.email === this.userStore.user.email) {
+        this.$store.dispatch('addNewMessageToConversation', newMessage)
+      }
+    }
   }
 }
 </script>

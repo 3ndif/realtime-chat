@@ -11,7 +11,7 @@ export default {
   },
   data () {
     return {
-      email: 'first@mail.ru',
+      email: 'second@mail.ru',
       password: 'password'
     }
   },
@@ -28,7 +28,6 @@ export default {
 
       HTTP.post(api.login, postData)
         .then(response => {
-          console.log(response)
           if (response.status !== 200) {
             return false
           }
@@ -46,9 +45,9 @@ export default {
       window.localStorage.setItem('authUser', JSON.stringify(authUser))
 
       HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + authUser.access_token
+
       HTTP.get(api.user)
         .then(response => {
-          console.log(response)
           authUser.email = response.data.email
           authUser.name = response.data.name
 
