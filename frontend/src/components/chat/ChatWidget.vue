@@ -17,7 +17,7 @@ export default {
   sockets: {
     message (data) {
       let newMessage = JSON.parse(data)
-      console.log(newMessage)
+
       if (newMessage.receiver.email === this.userStore.user.email) {
         this.$store.dispatch('addNewMessageToConversation', newMessage)
       }
@@ -32,3 +32,9 @@ export default {
     <chat-content></chat-content>
   </div>
 </template>
+
+<style>
+#chat-widget {
+  position: relative;
+}
+</style>

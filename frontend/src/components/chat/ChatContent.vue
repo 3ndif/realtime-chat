@@ -5,7 +5,12 @@ export default {
   computed: {
     ...mapState({
       chatStore: state => state.chatStore
-    })
+    }),
+    companionName () {
+      if (this.chatStore.currentChatUser !== null) {
+        return this.chatStore.currentChatUser.name
+      }
+    }
   },
   updated () {
     this.scrollToBottom()
@@ -35,36 +40,34 @@ export default {
 
 <template>
   <div class="col-md-6" id="chat-content-container">
-    <div class="row header">
+    <div class="top">
+      <span>
+        To:
+        <span>{{ companionName }}</span>
+      </span>
     </div>
     <div id="conversation" ref="conversation">
-      <div
-      v-for="(message, index) in chatStore.conversation"
-      :key="index"
-      class="row message-body">
-        <div
-        v-bind:class="[(chatStore.currentChatUser.id === message.sender_id) ? 'message-receiver' : 'message-sender']"
-        class="col-md-12">
-          <div
-          v-bind:class="[(chatStore.currentChatUser.id === message.sender_id) ? 'receiver' : 'sender']"
-          >
-            <div class="message-text">
-              {{ message.message }}
-            </div>
-            <span class="message-time">
-              {{ message.created_at }}
-            </span>
-          </div>
-        </div>
+      <div class="conversation-time">
+        <span>Today 15:00</span>
       </div>
+      <transition-group name="list">
+        <div
+        v-for="(message, index) in chatStore.conversation"
+        :key="index"
+        class="message-block"
+        v-bind:class="[(chatStore.currentChatUser.id === message.sender_id) ? 'companion' : 'me']">
+            {{ message.message }}
+        </div>
+      </transition-group>
     </div>
     <div
     v-if="chatStore.currentChatUser !== null"
     class="row reply">
       <div class="col-sm-9 reply-input">
-        <textarea
+        <input
+        type="text"
         v-model="reply"
-        class="form-control"></textarea>
+        class="form-control">
       </div>
       <div class="col-sm-3 reply-send">
         <button
@@ -76,12 +79,128 @@ export default {
   </div>
 </template>
 
+<style lang="scss">
+@mixin line {
+  position: absolute;
+  top: 10px;
+  display: inline-block;
+  width: 30%;
+  height: 1px;
+  content: '';
+  background-color: #e6e6e6;
+}
+
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+.list-enter, .list-leave-to /* .list-leave-active до версии 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+  #chat-content-container {
+    position: relative;
+    width: 62.4%;
+    height: 100%;
+
+    .top {
+      width: 100%;
+      height: 47px;
+      padding: 15px 29px;
+      background-color: #eceff1;
+    }
+
+    #conversation {
+      position: relative;
+      overflow: hidden;
+      height: 400px;
+      padding: 0 35px 92px;
+      border-width: 1px 1px 1px 0;
+      border-style: solid;
+      border-color: #e6e6e6;
+      // height: calc(100% - 48px);
+      justify-content: flex-end;
+      flex-direction: column;
+      overflow-y: auto;
+
+      .conversation-time {
+        position: relative;
+        width: 100%;
+        margin-bottom: 27px;
+        text-align: center;
+
+        span {
+          font-size: 14px;
+          display: inline-block;
+          color: #999;
+          &:before { @include line; left: 0; }
+          &:after { @include line; right: 0; }
+        }
+      }
+
+      .message-block {
+        -webkit-animation-duration: 0.3s;
+        animation-duration: 0.3s;
+        transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
+        font-size: 16px;
+        position: relative;
+        display: inline-block;
+        clear: both;
+        margin-bottom: 8px;
+        padding: 13px 14px;
+        vertical-align: top;
+        border-radius: 5px;
+        &:before {
+          position: absolute;
+          top: 19px;
+          display: block;
+          width: 8px;
+          height: 6px;
+          content: '\00a0';
+          -webkit-transform: rotate(29deg) skew(-35deg);
+          transform: rotate(29deg) skew(-35deg);
+        }
+
+        &.companion {
+          float: left;
+          color: #fff;
+          background-color: #00b0ff;
+          align-self: flex-start;
+          -webkit-animation-name: slideFromLeft;
+          animation-name: slideFromLeft;
+          &:before {
+            left: -3px;
+            background-color: #00b0ff;
+          }
+        }
+
+        &.me {
+          float: right;
+          color: #1a1a1a;
+          background-color: #eceff1;
+          align-self: flex-end;
+          -webkit-animation-name: slideFromRight;
+          animation-name: slideFromRight;
+          &:before {
+            right: -3px;
+            background-color: #eceff1;
+          }
+        }
+      }
+    }
+  }
+</style>
+
 <style lang="scss" scoped>
+/**
 #chat-content-container {
     padding: 0 !important;
     margin: 0 !important;
     width: 100%;
-    border-left: 1px solid rgba(0, 0, 0, .08);
     overflow-y: auto;
 
   .header {
@@ -104,9 +223,9 @@ export default {
 
     padding: 0 !important;
     margin: 0 !important;
-    /* width: 100%; */
+    width: 100%;
     border-left: 1px solid rgba(0, 0, 0, .08);
-    /* overflow-y: auto; */
+    overflow-y: auto;
 
     .message-body {
         margin: 0 !important;
@@ -181,7 +300,7 @@ export default {
       padding: 2px 5px !important;
       height: 40px;
 
-      textarea {
+      input {
         width: 100%;
         resize: none;
         overflow: hidden;
@@ -203,4 +322,5 @@ export default {
     }
   }
 }
+**/
 </style>

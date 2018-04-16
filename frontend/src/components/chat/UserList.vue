@@ -29,31 +29,144 @@ export default {
 
 <template>
   <div class="col-md-3" id="chat-user-list">
-    <div class="row header"></div>
-    <div class="row listing">
+    <div class="row top">
+      <input type="text" class="form-control">
+    </div>
+    <div class="listing">
       <div
       v-for="(user, index) in chatStore.userList"
       :key="index"
-      class="row body"
+      class="body"
       v-bind:class="[selectedClass(user)]"
       v-on:click="handleOpenConversationWithUser(user)">
-        <div class="col-md-3 col-3"></div>
-        <div class="col-md-9 col-9">
-          <div class="row">
-            <div class="col-md-8 col-8 body-name">
-               <span class="name-meta">{{user.name}}</span>
-            </div>
-            <div class="col-md-4 col-4 body-time">
-              <span class="time-meta float-right">15:00</span>
-            </div>
-          </div>
-        </div>
+        <span class="name">{{user.name}}</span>
+        <span class="time">2:09 PM</span>
+        <span class="preview">I was wondering...</span>
       </div>
     </div>
   </div>
 </template>
 
+<style lang="scss">
+@mixin hover {
+  color: #fff;
+  background: transparent;
+}
+
+  #chat-user-list {
+    height: 100%;
+    border: 1px solid #e6e6e6;
+    background-color: #fff;
+    padding: 0;
+
+    .top {
+      position: relative;
+      width: 100%;
+      height: 96px;
+      padding: 29px;
+      &:after {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        display: block;
+        width: 80%;
+        height: 1px;
+        content: '';
+        background-color: #e6e6e6;
+        -webkit-transform: translate(-50%, 0);
+        transform: translate(-50%, 0);
+      }
+
+      input {
+        float: left;
+        width: 188px;
+        height: 42px;
+        padding: 0 15px;
+        border: 1px solid #e6e6e6;
+        background-color: #eceff1;
+        border-radius: 21px;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 400;
+      }
+    }
+
+    .listing {
+      margin-left: -1px;
+      border-right: 1px solid #e6e6e6;
+      border-left: 1px solid #e6e6e6;
+      margin-bottom: 10px;
+      width: calc(100% + 2px);
+
+      .body {
+        position: relative;
+        width: 100%;
+        padding: 12px 10% 16px;
+        cursor: pointer;
+        background-color: #fff;
+        &:after {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          display: block;
+          width: 80%;
+          height: 1px;
+          content: '';
+          background-color: #e6e6e6;
+          -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+        }
+        &:hover {
+          margin-top: -1px;
+          margin-left: -1px;
+          padding-top: 13px;
+          border: 0;
+          background-color: #00b0ff;
+          width: calc(100% + 2px);
+          padding-left: calc(10% + 1px);
+
+          .time { @include hover; }
+
+          .name { @include hover; }
+
+          .preview { @include hover; }
+        }
+
+        .name {
+          color: #fff;
+          background: transparent;
+          font-size: 14px;
+          line-height: 22px;
+          color: #1a1a1a;
+          font-family: 'Source Sans Pro', sans-serif;
+          font-weight: 600;
+        }
+
+        .time {
+          font-size: 14px;
+          position: absolute;
+          top: 16px;
+          right: 10%;
+          padding: 0 0 5px 5px;
+          color: #999;
+          background-color: #fff;
+        }
+
+        .preview {
+          font-size: 14px;
+          display: inline-block;
+          overflow: hidden !important;
+          width: 70%;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          color: #999;
+        }
+      }
+    }
+  }
+</style>
+
 <style lang="scss" scoped>
+/**
 #chat-user-list {
   padding: 0;
   margin: 0;
@@ -115,4 +228,5 @@ export default {
     }
   }
 }
+**/
 </style>
