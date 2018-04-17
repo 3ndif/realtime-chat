@@ -1,0 +1,115 @@
+@mixin line {
+  position: absolute;
+  top: 10px;
+  display: inline-block;
+  width: 30%;
+  height: 1px;
+  content: '';
+  background-color: #e6e6e6;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  -webkit-transition: all .3s ease;
+  transition: all .3s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+#chat-content-container {
+  position: relative;
+  height: 500px;
+
+  .top {
+    width: 100%;
+    height: 47px;
+    padding: 15px 29px;
+    background-color: #eceff1;
+  }
+
+  .reply {
+    margin-top: 10px;
+    input {
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+
+  #conversation {
+    position: relative;
+    overflow: hidden;
+    height: 80%;
+    padding: 0 35px 92px;
+    border-width: 1px 1px 1px 0;
+    border-style: solid;
+    border-color: #e6e6e6;
+    // height: calc(100% - 48px);
+    justify-content: flex-end;
+    flex-direction: column;
+    overflow-y: auto;
+
+    .conversation-time {
+      position: relative;
+      width: 100%;
+      margin-bottom: 27px;
+      text-align: center;
+
+      span {
+        font-size: 14px;
+        display: inline-block;
+        color: #999;
+        &:before { @include line; left: 0; }
+        &:after { @include line; right: 0; }
+      }
+    }
+
+    .message-block {
+      font-size: 16px;
+      position: relative;
+      display: inline-block;
+      clear: both;
+      margin-bottom: 8px;
+      padding: 13px 14px;
+      vertical-align: top;
+      border-radius: 5px;
+      &:before {
+        position: absolute;
+        top: 19px;
+        display: block;
+        width: 8px;
+        height: 6px;
+        content: '\00a0';
+        -webkit-transform: rotate(29deg) skew(-35deg);
+        transform: rotate(29deg) skew(-35deg);
+      }
+
+      &.companion {
+        float: left;
+        color: #1a1a1a;
+        background-color: #eceff1;
+        align-self: flex-start;
+        &:before {
+          left: -3px;
+          background-color: #eceff1;
+        }
+      }
+
+      &.me {
+        float: right;
+        color: #fff;
+        background-color: #00b0ff;
+        align-self: flex-end;
+        &:before {
+          right: -3px;
+          background-color: #00b0ff;
+        }
+      }
+    }
+  }
+}

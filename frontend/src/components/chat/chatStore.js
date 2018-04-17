@@ -1,9 +1,11 @@
 import {HTTP, api} from './../../http-links'
+import Vue from 'vue'
 
 const state = {
   conversation: [],
   userList: [],
-  currentChatUser: null
+  currentChatUser: null,
+  previewMessages: {}
 }
 
 const mutations = {
@@ -18,6 +20,10 @@ const mutations = {
   },
   ADD_NEW_MESSAGE_TO_CONVERSATION (state, newMessage) {
     state.conversation.push(newMessage)
+  },
+  SET_PREVIEW_LAST_MESSAGE (state, newMessage) {
+    /* https://vuejs.org/v2/guide/reactivity.html */
+    Vue.set(state.previewMessages, newMessage.sender.email, newMessage.message)
   }
 }
 
@@ -60,6 +66,9 @@ const actions = {
   },
   addNewMessageToConversation: ({commit}, newMessage) => {
     commit('ADD_NEW_MESSAGE_TO_CONVERSATION', newMessage)
+  },
+  setPreviewLastMessage: ({commit}, newMessage) => {
+    commit('SET_PREVIEW_LAST_MESSAGE', newMessage)
   }
 }
 

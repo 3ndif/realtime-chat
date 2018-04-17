@@ -19,7 +19,11 @@ export default {
       let newMessage = JSON.parse(data)
 
       if (newMessage.receiver.email === this.userStore.user.email) {
-        this.$store.dispatch('addNewMessageToConversation', newMessage)
+        if (newMessage.sender.email === this.chatStore.currentChatUser.email) {
+          this.$store.dispatch('addNewMessageToConversation', newMessage)
+        } else {
+          this.$store.dispatch('setPreviewLastMessage', newMessage)
+        }
       }
     }
   }
