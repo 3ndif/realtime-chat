@@ -28,4 +28,22 @@ class Chat extends Model
     {
         return Carbon::parse($value)->diffForHumans();
     }
+
+    /**
+    * @param array $companionsId
+    */
+    public static function updateReadStatusAndGetConversation($companionsId){
+      self::whereIn('sender_id', $companionsId)
+                        ->whereIn('receiver_id', $companionsId)
+                        ->where('read', 0)
+                        ->update(['read' => 1]);
+
+      $conversationTarget = self::whereIn('sender_id', $companionsId)
+                        ->whereIn('receiver_id', $companionsId)
+                        ->orderBy('created_at', 'desc')
+                        ->limit(10)
+                        ->get();
+
+      return $conversationTarget;
+    }
 }

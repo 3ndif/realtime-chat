@@ -1,14 +1,33 @@
 import {HTTP, api} from './../../http-links'
 import Vue from 'vue'
 
+/**
+* opts - Reactive object for additional data for every user from userList
+* For now it involves last unread online messages
+**/
 const state = {
   conversation: [],
   userList: [],
-  currentChatUser: null,
+  currentChatUser: {
+    id: null,
+    email: null
+  },
+  opts: {},
   previewMessages: {}
+
 }
 
 const mutations = {
+  /**
+  * Initialize with only SET_USER_LIST
+  */
+  INIT_PROPS (state, userList) {
+    for (let i = 0; i < userList.length; i++) {
+      let email = userList[i].email
+      Vue.set(state.opts, email, {})
+      Vue.set(state.opts[email], 'newMessages', [])
+    }
+  },
   SET_CONVERSATION (state, conversation) {
     state.conversation = conversation
   },
@@ -21,9 +40,10 @@ const mutations = {
   ADD_NEW_MESSAGE_TO_CONVERSATION (state, newMessage) {
     state.conversation.push(newMessage)
   },
-  SET_PREVIEW_LAST_MESSAGE (state, newMessage) {
+  ADD_MESSAGE_TO_PROPS (state, message) {
     /* https://vuejs.org/v2/guide/reactivity.html */
-    Vue.set(state.previewMessages, newMessage.sender.email, newMessage.message)
+    let indexOf = state.opts[message.sender.email].newMessages.length
+    Vue.set(state.opts[message.sender.email].newMessages, indexOf, message)
   }
 }
 
@@ -34,7 +54,9 @@ const actions = {
   setUserList: ({commit}) => {
     HTTP.get(api.getUserList)
       .then(response => {
-        commit('SET_USER_LIST', response.data.data)
+        let userList = response.data.data
+        commit('SET_USER_LIST', userList)
+        commit('INIT_PROPS', userList)
       })
   },
   setCurrentChatUser: ({commit}, user) => {
@@ -48,6 +70,7 @@ const actions = {
       .then(response => {
         if (response.status === 200) {
           commit('SET_CONVERSATION', response.data.data)
+          commit('REMOVE_PREVIEW_MESSAGE', user)
         }
       })
   },
@@ -67,8 +90,8 @@ const actions = {
   addNewMessageToConversation: ({commit}, newMessage) => {
     commit('ADD_NEW_MESSAGE_TO_CONVERSATION', newMessage)
   },
-  setPreviewLastMessage: ({commit}, newMessage) => {
-    commit('SET_PREVIEW_LAST_MESSAGE', newMessage)
+  addNewMessageFromAnotherUser: ({commit}, newMessage) => {
+    commit('ADD_MESSAGE_TO_PROPS', newMessage)
   }
 }
 

@@ -22,7 +22,7 @@ export default {
         if (newMessage.sender.email === this.chatStore.currentChatUser.email) {
           this.$store.dispatch('addNewMessageToConversation', newMessage)
         } else {
-          this.$store.dispatch('setPreviewLastMessage', newMessage)
+          this.$store.dispatch('addNewMessageFromAnotherUser', newMessage)
         }
       }
     }

@@ -20,13 +20,9 @@ class ChatController extends Controller
         $userId, $this->request->user()->id
       ];
 
-      $chat = Chat::whereIn('sender_id', $companions)
-                  ->whereIn('receiver_id', $companions)
-                  ->orderBy('created_at', 'desc')
-                  ->limit(10)
-                  ->get();
+      $conversation = Chat::updateReadStatusAndGetConversation($companions);
 
-      return response(['data' => $chat->reverse()->values()]);
+      return response(['data' => $conversation->reverse()->values()]);
     }
 
     public function sendNewMessage() {
