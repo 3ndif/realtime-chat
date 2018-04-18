@@ -1,5 +1,5 @@
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import UserList from './UserList'
 import ChatContent from './ChatContent'
 
@@ -8,7 +8,10 @@ export default {
     ...mapState({
       chatStore: state => state.chatStore,
       userStore: state => state.userStore
-    })
+    }),
+    ...mapGetters([
+      'isLoggedIn'
+    ])
   },
   components: {
     UserList,

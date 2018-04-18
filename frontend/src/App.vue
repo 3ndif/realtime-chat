@@ -1,10 +1,16 @@
 <script>
 import TopMenuNav from './components/TopMenuNav'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'App',
   components: {
     TopMenuNav
+  },
+  computed: {
+    ...mapGetters([
+      'isLoggedIn'
+    ])
   },
   created () {
     const userObj = JSON.parse(window.localStorage.getItem('authUser'))
@@ -16,7 +22,7 @@ export default {
 <template>
   <div>
     <top-menu-nav
-      v-show="$route.name === 'login' ? false : true">
+      v-if="isLoggedIn">
     </top-menu-nav>
     <div class="container">
       <transition name="fade">

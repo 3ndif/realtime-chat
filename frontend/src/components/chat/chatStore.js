@@ -12,9 +12,7 @@ const state = {
     id: null,
     email: null
   },
-  opts: {},
-  previewMessages: {}
-
+  opts: {}
 }
 
 const mutations = {
@@ -44,6 +42,9 @@ const mutations = {
     /* https://vuejs.org/v2/guide/reactivity.html */
     let indexOf = state.opts[message.sender.email].newMessages.length
     Vue.set(state.opts[message.sender.email].newMessages, indexOf, message)
+  },
+  REMOVE_USER_PROPS (state, user) {
+    Vue.set(state.opts[user.email], 'newMessages', [])
   }
 }
 
@@ -70,7 +71,7 @@ const actions = {
       .then(response => {
         if (response.status === 200) {
           commit('SET_CONVERSATION', response.data.data)
-          commit('REMOVE_PREVIEW_MESSAGE', user)
+          commit('REMOVE_USER_PROPS', user)
         }
       })
   },

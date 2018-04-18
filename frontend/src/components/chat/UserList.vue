@@ -23,9 +23,9 @@ export default {
         return 'selected'
       }
     },
-    previewMessage (user) {
-      if (this.chatStore.previewMessages[user.email]) {
-        return this.chatStore.previewMessages.message[user.email]
+    anyUnreadMessages (user) {
+      if (this.chatStore.opts[user.email].newMessages[this.chatStore.opts[user.email].newMessages.length - 1]) {
+        return true
       }
     }
   }
@@ -46,12 +46,14 @@ export default {
       v-on:click="handleOpenConversationWithUser(user)">
         <span class="name">
           {{user.name}}
-          <span class="badge badge-dark">{{ chatStore.opts[user.email].newMessages.length }}</span>
+          <span
+          v-if="anyUnreadMessages(user)"
+          class="badge badge-dark">{{ chatStore.opts[user.email].newMessages.length }}</span>
         </span>
         <span class="time">2:09 PM</span>
         <transition name="fade">
             <span
-            v-if="chatStore.opts[user.email].newMessages[chatStore.opts[user.email].newMessages.length - 1]"
+            v-if="anyUnreadMessages(user)"
             class="preview">{{ chatStore.opts[user.email].newMessages[chatStore.opts[user.email].newMessages.length - 1].message }}</span>
         </transition>
       </div>

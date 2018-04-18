@@ -1,13 +1,16 @@
 const state = {
-  user: null
+  user: null,
+  token: localStorage.getItem('authUser') || ''
 }
 
 const mutations = {
   SET_AUTH_USER (state, user) {
     state.user = user
+    state.token = localStorage.getItem('authUser') || ''
   },
   CLEAR_AUTH_USER () {
     state.user = null
+    state.token = null
   }
 }
 
@@ -20,6 +23,10 @@ const actions = {
   }
 }
 
+const getters = {
+  isLoggedIn: state => !!state.token
+}
+
 export default {
-  state, mutations, actions
+  state, mutations, actions, getters
 }

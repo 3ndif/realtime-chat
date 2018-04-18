@@ -1,5 +1,5 @@
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import {clientData} from './../env'
 import {HTTP, api} from './../http-links'
 
@@ -7,7 +7,13 @@ export default {
   computed: {
     ...mapState({
       userState: state => state.userState
-    })
+    }),
+    ...mapGetters([
+      'isLoggedIn'
+    ])
+  },
+  created () {
+    console.log(this.isLoggedIn)
   },
   data () {
     return {
