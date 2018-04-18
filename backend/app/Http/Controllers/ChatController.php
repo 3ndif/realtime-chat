@@ -22,11 +22,11 @@ class ChatController extends Controller
 
       $chat = Chat::whereIn('sender_id', $companions)
                   ->whereIn('receiver_id', $companions)
-                  ->orderBy('created_at')
+                  ->orderBy('created_at', 'desc')
                   ->limit(10)
                   ->get();
 
-      return response(['data' => $chat]);
+      return response(['data' => $chat->reverse()->values()]);
     }
 
     public function sendNewMessage() {
