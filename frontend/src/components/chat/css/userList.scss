@@ -52,7 +52,7 @@
       padding: 12px 10% 16px;
       cursor: pointer;
       background-color: #fff;
-      &:after, &:after:hover {
+      &:after{
         position: absolute;
         bottom: 0;
         left: 50%;
@@ -72,6 +72,28 @@
         background-color: #00b0ff;
         width: calc(100% + 2px);
         padding-left: calc(10% + 1px);
+
+        .time { @include hover; }
+
+        .name { @include hover; }
+
+        .preview { @include hover; }
+      }
+      &:hover:after {
+        height: 0;
+      }
+
+      &.selected {
+        margin-top: -1px;
+        margin-left: -1px;
+        padding-top: 13px;
+        border: 0;
+        background-color: #00b0ff;
+        width: calc(100% + 2px);
+        padding-left: calc(10% + 1px);
+        &:after {
+          height: 0;
+        }
 
         .time { @include hover; }
 

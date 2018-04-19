@@ -1,6 +1,7 @@
 <script>
 import {mapState, mapGetters} from 'vuex'
 import UserList from './UserList'
+import OnlineList from './OnlineList'
 import ChatContent from './ChatContent'
 
 export default {
@@ -15,7 +16,8 @@ export default {
   },
   components: {
     UserList,
-    ChatContent
+    ChatContent,
+    OnlineList
   },
   sockets: {
     message (data) {
@@ -37,11 +39,13 @@ export default {
   <div id="chat-widget" class="row">
     <user-list></user-list>
     <chat-content></chat-content>
+    <online-list></online-list>
   </div>
 </template>
 
-<style>
+<style lang="scss">
 #chat-widget {
   position: relative;
+  height: 85vh;
 }
 </style>
