@@ -27,6 +27,8 @@ export default {
       if (this.chatStore.opts[user.email].newMessages[this.chatStore.opts[user.email].newMessages.length - 1]) {
         return true
       }
+
+      return false
     }
   }
 }
@@ -63,9 +65,4 @@ export default {
 
 <style lang="scss" scoped>
 @import 'css/userList.scss';
-
-.badge-dark {
-  border-radius: .55rem;
-  font-size: 65%;
-}
 </style>

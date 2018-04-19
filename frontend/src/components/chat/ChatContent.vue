@@ -1,11 +1,12 @@
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
   computed: {
     ...mapState({
       chatStore: state => state.chatStore
     }),
+    ...mapGetters(['anyStartedConversation']),
     companionName () {
       if (this.chatStore.currentChatUser !== null) {
         return this.chatStore.currentChatUser.name
@@ -74,7 +75,7 @@ export default {
       </transition-group>
     </div>
     <div
-    v-if="chatStore.currentChatUser !== null"
+    v-if="anyStartedConversation"
     class="row reply">
       <div class="col-sm-9 reply-input">
         <input

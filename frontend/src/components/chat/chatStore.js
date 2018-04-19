@@ -96,6 +96,10 @@ const actions = {
   }
 }
 
+const getters = {
+  anyStartedConversation: state => !!state.currentChatUser.id
+}
+
 export default {
-  state, mutations, actions
+  state, mutations, actions, getters
 }
