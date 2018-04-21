@@ -12,14 +12,33 @@ export default {
     }),
     ...mapGetters([
       'isLoggedIn'
-    ])
+    ]),
+    socketUser () {
+      return {
+        email: this.userStore.user.email,
+        name: this.userStore.user.name
+      }
+    }
   },
   components: {
     UserList,
     ChatContent,
     OnlineList
   },
+  created () {
+    this.joinUserToChat(this.socketUser)
+  },
+  destroyed () {
+    this.$socket.emit('unjoinUserFromChat', this.userStore.user.email)
+  },
   sockets: {
+    connect: function () {
+      /**
+      * Joining users when server is restarted
+      */
+      console.log('component socket connected')
+      this.joinUserToChat(this.socketUser)
+    },
     message (data) {
       let newMessage = JSON.parse(data)
 
@@ -30,6 +49,17 @@ export default {
           this.$store.dispatch('addNewMessageFromAnotherUser', newMessage)
         }
       }
+    },
+    joinedUserToChat (data) {
+      console.log(data.email + ' has joined to chat')
+    },
+    onlineIsChanged (data) {
+      this.$store.dispatch('setOnlineUserList', data)
+    }
+  },
+  methods: {
+    joinUserToChat (userData) {
+      this.$socket.emit('joinUser', userData)
     }
   }
 }

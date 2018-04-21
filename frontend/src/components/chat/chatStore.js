@@ -8,6 +8,7 @@ import Vue from 'vue'
 const state = {
   conversation: [],
   userList: [],
+  onlineUserList: [],
   currentChatUser: {
     id: null,
     email: null
@@ -31,6 +32,9 @@ const mutations = {
   },
   SET_USER_LIST (state, users) {
     state.userList = users
+  },
+  SET_ONLINE_USER_LIST (state, users) {
+    state.onlineUserList = users
   },
   SET_CURRENT_CHAT_USER (state, user) {
     state.currentChatUser = user
@@ -93,6 +97,9 @@ const actions = {
   },
   addNewMessageFromAnotherUser: ({commit}, newMessage) => {
     commit('ADD_MESSAGE_TO_PROPS', newMessage)
+  },
+  setOnlineUserList: ({commit}, userList) => {
+    commit('SET_ONLINE_USER_LIST', userList)
   }
 }
 
