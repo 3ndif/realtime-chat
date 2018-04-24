@@ -1,5 +1,5 @@
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import Velocity from 'velocity-animate'
 
 export default {
@@ -7,6 +7,9 @@ export default {
     ...mapState({
       chatStore: state => state.chatStore
     }),
+    ...mapGetters([
+      'indexOfUserList'
+    ]),
     computedUserList () {
       return this.chatStore.userList.filter(item => {
         return item.name.toLowerCase().indexOf(this.querySearchUser.toLowerCase()) !== -1
@@ -18,9 +21,7 @@ export default {
       querySearchUser: ''
     }
   },
-  created () {
-    this.$store.dispatch('setUserList')
-  },
+  created () {},
   methods: {
     handleOpenConversationWithUser (user) {
       this.$store.dispatch('setCurrentChatUser', user)
@@ -30,16 +31,28 @@ export default {
         return ''
       }
 
-      if (this.chatStore.currentChatUser.id === user.id) {
+      if (this.chatStore.currentChatUser.email === user.email) {
         return 'selected'
       }
     },
-    anyUnreadMessages (user) {
-      if (this.chatStore.opts[user.email].newMessages[this.chatStore.opts[user.email].newMessages.length - 1]) {
-        return true
+    unreadMessagesAmount (user) {
+      let amount = 0
+      if (this.chatStore.currentChatUser.email === user.email) {
+        return amount
       }
 
-      return false
+      let index = this.indexOfUserList(user)
+      let unreadMsg = this.chatStore.userList[index].rMessages
+
+      if (unreadMsg) {
+        amount = unreadMsg.length
+      }
+
+      return amount
+    },
+    previewMessage (user) {
+      let index = this.indexOfUserList(user)
+      return this.chatStore.userList[index].rMessages[this.chatStore.userList[index].rMessages.length - 1]
     },
     /**
     * TRANSITION CALLBACKS
@@ -97,14 +110,14 @@ export default {
           <span class="name">
             {{user.name}}
             <span
-            v-if="anyUnreadMessages(user)"
-            class="badge badge-dark">{{ chatStore.opts[user.email].newMessages.length }}</span>
+            v-if="unreadMessagesAmount(user)"
+            class="badge badge-dark">{{ unreadMessagesAmount(user) }}</span>
           </span>
           <span class="time">2:09 PM</span>
           <transition name="fade">
               <span
-              v-if="anyUnreadMessages(user)"
-              class="preview">{{ chatStore.opts[user.email].newMessages[chatStore.opts[user.email].newMessages.length - 1].message }}</span>
+              v-if="unreadMessagesAmount(user)"
+              class="preview">{{ previewMessage(user) }}</span>
           </transition>
         </div>
       </transition-group>

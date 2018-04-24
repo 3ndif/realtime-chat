@@ -1,11 +1,20 @@
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
   computed: {
     ...mapState({
       chatStore: state => state.chatStore
-    })
+    }),
+    ...mapGetters([
+      'indexOfUserList'
+    ])
+  },
+  methods: {
+    handleSelectUserFromOnlineList (user) {
+      this.$store.dispatch('setCurrentChatUser', user)
+      this.$store.dispatch('addToUserList', user)
+    }
   }
 }
 </script>
@@ -16,6 +25,7 @@ export default {
     <div
     v-for="user in chatStore.onlineUserList"
     :key="user.id"
+    v-on:click="handleSelectUserFromOnlineList(user)"
     class="o-user p-1">
       <div class="el d-flex justify-content-start">
         <img class="rounded-circle d-flex align-self-center mr-2"

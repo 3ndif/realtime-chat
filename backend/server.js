@@ -16,22 +16,22 @@ io.on('connection', function(socket){
   })
 
   socket.on('joinUser', function(user){
-    console.log(user.email + ' has joined the chat')
+    console.log(user.email + ' has joined to chat')
     socket.email = user.email
 
     if (!anyOnlineUser(user.email)){
       onlineUsers.push(user)
     }
 
-    onlineIsChanged()
+    updateOnlineUserList()
   });
 
   socket.on('unjoinUserFromChat', function () {
-    hasDisconnected()
+    updateOnlineUserList()
   })
 
   socket.on('disconnect', function () {
-    hasDisconnected()
+    updateOnlineUserList()
   })
 
   function hasDisconnected () {
@@ -42,10 +42,10 @@ io.on('connection', function(socket){
       }
     }
 
-    onlineIsChanged()
+    updateOnlineUserList()
   }
 
-  function onlineIsChanged() {
+  function updateOnlineUserList() {
     io.emit('onlineIsChanged', onlineUsers)
   }
 

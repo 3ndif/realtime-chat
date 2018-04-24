@@ -1,12 +1,12 @@
 const state = {
   user: null,
-  token: localStorage.getItem('authUser') || ''
+  token: null
 }
 
 const mutations = {
   SET_AUTH_USER (state, user) {
     state.user = user
-    state.token = localStorage.getItem('authUser') || ''
+    state.token = JSON.parse(localStorage.getItem('authUser')).access.access_token || ''
   },
   CLEAR_AUTH_USER () {
     state.user = null
@@ -15,7 +15,14 @@ const mutations = {
 }
 
 const actions = {
-  setAuthUser: ({commit}, user) => {
+  setAuthUser: ({commit}) => {
+    let authUser = JSON.parse(localStorage.getItem('authUser'))
+
+    if (!authUser) {
+      return false
+    }
+
+    let user = authUser.user
     commit('SET_AUTH_USER', user)
   },
   clearUser: ({commit}) => {

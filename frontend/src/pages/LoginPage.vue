@@ -12,9 +12,6 @@ export default {
       'isLoggedIn'
     ])
   },
-  created () {
-    console.log(this.isLoggedIn)
-  },
   data () {
     return {
       email: 'second@mail.ru',
@@ -45,17 +42,18 @@ export default {
     },
     setAuthUser (passportData) {
       const authUser = {}
+      authUser.access = {
+        access_token: passportData.access_token,
+        refresh_token: passportData.refresh_token
+      }
 
-      authUser.access_token = passportData.access_token
-      authUser.refresh_token = passportData.refresh_token
       window.localStorage.setItem('authUser', JSON.stringify(authUser))
 
-      HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + authUser.access_token
+      HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + authUser.access.access_token
 
       HTTP.get(api.user)
         .then(response => {
-          authUser.email = response.data.email
-          authUser.name = response.data.name
+          authUser.user = response.data
 
           let jsonUser = JSON.stringify(authUser)
           window.localStorage.setItem('authUser', jsonUser)

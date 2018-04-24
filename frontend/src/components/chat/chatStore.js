@@ -2,8 +2,14 @@ import {HTTP, api} from './../../http-links'
 import Vue from 'vue'
 
 /**
-* opts - Reactive object for additional data for every user from userList
-* For now it involves last unread online messages
+* @param userList - the list of users you have conversation with
+* @conversation - is an active conversation with user ($currentUser)
+*
+* Also we need to store passive conversation from the other users
+* for showing some notifications - For that added REACTIVE_PROPERTIES in userList
+* that can be dynamically added by ADD_DATA_TO_REACTIVE_PROPERTY
+* BUT First of all you need to scpecify reactive properties in $reactiveAddlProperties
+* and then they automaticallly will be added in for each user in $userList
 **/
 const state = {
   conversation: [],
@@ -12,26 +18,18 @@ const state = {
   currentChatUser: {
     id: null,
     email: null
-  },
-  opts: {}
+  }
 }
 
 const mutations = {
-  /**
-  * Initialize with only SET_USER_LIST
-  */
-  INIT_PROPS (state, userList) {
-    for (let i = 0; i < userList.length; i++) {
-      let email = userList[i].email
-      Vue.set(state.opts, email, {})
-      Vue.set(state.opts[email], 'newMessages', [])
-    }
-  },
   SET_CONVERSATION (state, conversation) {
     state.conversation = conversation
   },
   SET_USER_LIST (state, users) {
     state.userList = users
+  },
+  ADD_TO_USER_LIST (state, user) {
+    state.userList.push(user)
   },
   SET_ONLINE_USER_LIST (state, users) {
     state.onlineUserList = users
@@ -39,16 +37,25 @@ const mutations = {
   SET_CURRENT_CHAT_USER (state, user) {
     state.currentChatUser = user
   },
-  ADD_NEW_MESSAGE_TO_CONVERSATION (state, newMessage) {
-    state.conversation.push(newMessage)
-  },
-  ADD_MESSAGE_TO_PROPS (state, message) {
+  INIT_REACTIVE_PROPERTIES_TO_USER_LIST (state, {userIndex}) {
     /* https://vuejs.org/v2/guide/reactivity.html */
-    let indexOf = state.opts[message.sender.email].newMessages.length
-    Vue.set(state.opts[message.sender.email].newMessages, indexOf, message)
+    console.log('init reactive props')
+    for (let i = 0; i < reactiveAddlProperties.length; i++) {
+      Vue.set(state.userList[userIndex], reactiveAddlProperties[i], [])
+    }
   },
-  REMOVE_USER_PROPS (state, user) {
-    Vue.set(state.opts[user.email], 'newMessages', [])
+  ADD_DATA_TO_REACTIVE_PROPERTY (state, {userIndex, property, value}) {
+    let indexOf = state.userList[userIndex][property].length
+
+    Vue.set(state.userList[userIndex][property], indexOf, value)
+  },
+  CLREAR_REACTIVE_PROPERTIES (state, {userIndex, properties}) {
+    for (let i = 0; i < properties.length; i++) {
+      Vue.set(state.userList[userIndex], properties[i], [])
+    }
+  },
+  ADD_NEW_MESSAGE_TO_CONVERSATION (state, message) {
+    state.conversation.push(message)
   }
 }
 
@@ -61,10 +68,17 @@ const actions = {
       .then(response => {
         let userList = response.data.data
         commit('SET_USER_LIST', userList)
-        commit('INIT_PROPS', userList)
       })
   },
-  setCurrentChatUser: ({commit}, user) => {
+  addToUserList ({commit, getters}, user) {
+    if (!~getters.indexOfUserList(user)) {
+      commit('ADD_TO_USER_LIST', user)
+
+      let userIndex = getters.indexOfUserList(user)
+      commit('INIT_REACTIVE_PROPERTIES_TO_USER_LIST', {userIndex})
+    }
+  },
+  setCurrentChatUser: ({commit, getters}, user) => {
     commit('SET_CURRENT_CHAT_USER', user)
 
     let httpData = {
@@ -74,8 +88,10 @@ const actions = {
     HTTP.get(api.getConversationWithUser, {params: httpData})
       .then(response => {
         if (response.status === 200) {
+          let userIndex = getters.indexOfUserList(user)
+          let properties = reactiveAddlProperties
           commit('SET_CONVERSATION', response.data.data)
-          commit('REMOVE_USER_PROPS', user)
+          commit('CLREAR_REACTIVE_PROPERTIES', {userIndex, properties})
         }
       })
   },
@@ -95,8 +111,12 @@ const actions = {
   addNewMessageToConversation: ({commit}, newMessage) => {
     commit('ADD_NEW_MESSAGE_TO_CONVERSATION', newMessage)
   },
-  addNewMessageFromAnotherUser: ({commit}, newMessage) => {
-    commit('ADD_MESSAGE_TO_PROPS', newMessage)
+  addNewMessageFromAnotherUser: ({commit, getters}, newMessage) => {
+    let userIndex = getters.indexOfUserList(newMessage.sender)
+    let property = 'rMessages'
+    let value = newMessage.message
+
+    commit('ADD_DATA_TO_REACTIVE_PROPERTY', {userIndex, property, value})
   },
   setOnlineUserList: ({commit}, userList) => {
     commit('SET_ONLINE_USER_LIST', userList)
@@ -104,9 +124,16 @@ const actions = {
 }
 
 const getters = {
-  anyStartedConversation: state => !!state.currentChatUser.id
+  anyStartedConversation: state => !!state.currentChatUser.email,
+  indexOfUserList: (state) => (user) => {
+    return state.userList.findIndex(el => el.email === user.email)
+  }
 }
 
 export default {
   state, mutations, actions, getters
 }
+
+const reactiveAddlProperties = [
+  'rMessages'
+]

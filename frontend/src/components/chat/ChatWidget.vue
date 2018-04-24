@@ -11,14 +11,9 @@ export default {
       userStore: state => state.userStore
     }),
     ...mapGetters([
-      'isLoggedIn'
-    ]),
-    socketUser () {
-      return {
-        email: this.userStore.user.email,
-        name: this.userStore.user.name
-      }
-    }
+      'isLoggedIn',
+      'indexOfUserList'
+    ])
   },
   components: {
     UserList,
@@ -26,7 +21,7 @@ export default {
     OnlineList
   },
   created () {
-    this.joinUserToChat(this.socketUser)
+    this.joinUserToChat(this.userStore.user)
   },
   destroyed () {
     this.$socket.emit('unjoinUserFromChat', this.userStore.user.email)
@@ -36,16 +31,17 @@ export default {
       /**
       * Joining users when server is restarted
       */
-      console.log('component socket connected')
-      this.joinUserToChat(this.socketUser)
+      this.joinUserToChat(this.userStore.user)
     },
     message (data) {
       let newMessage = JSON.parse(data)
+      let sender = newMessage.sender
 
       if (newMessage.receiver.email === this.userStore.user.email) {
         if (newMessage.sender.email === this.chatStore.currentChatUser.email) {
           this.$store.dispatch('addNewMessageToConversation', newMessage)
         } else {
+          this.$store.dispatch('addToUserList', sender)
           this.$store.dispatch('addNewMessageFromAnotherUser', newMessage)
         }
       }
